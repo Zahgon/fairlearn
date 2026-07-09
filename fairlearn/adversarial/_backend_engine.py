@@ -1,5 +1,3 @@
-# Copyright (c) Fairlearn contributors.
-# Licensed under the MIT License.
 
 from numpy import ndarray
 from sklearn.utils import shuffle
@@ -14,10 +12,7 @@ from ._constants import (
 
 
 class BackendEngine:
-    """The interface of a mixin class."""
 
-    # NOTE: to validate objects passed.
-    # We don't validate loss yet.
     model_class = None
     optim_class = None
 
@@ -37,7 +32,6 @@ class BackendEngine:
         n_Y_features = base._y_transform.n_features_out_
         n_A_features = base._sf_transform.n_features_out_
 
-        # Set up models
         if base.warm_start and hasattr(base, "backendEngine_"):
             self.predictor_model = base.backendEngine_.predictor_model
             self.adversary_model = base.backendEngine_.adversary_model
@@ -60,11 +54,9 @@ class BackendEngine:
         if hasattr(self, "__move_model__"):
             self.__move_model__()
 
-        # Set up losses
         self.predictor_loss = self.__init_loss__(base.predictor_loss_, "predictor")
         self.adversary_loss = self.__init_loss__(base.adversary_loss_, "adversary")
 
-        # Set up optimizers
         self.predictor_optimizer = self.__init_optimizers__(
             base.predictor_optimizer, self.predictor_model, "predictor"
         )
@@ -93,7 +85,6 @@ class BackendEngine:
         """
         if isinstance(model_param, list):
             if not isinstance(loss_param, str):
-                # Can not parse model as list when loss is undefined
                 raise ValueError(_LIST_MODEL_UNSUPPORTED.format(name, name))
             predictor_list_nodes = [X_features] + model_param + [y_features]
             if loss_param == "binary":
@@ -145,13 +136,10 @@ class BackendEngine:
         name : str
             name of model, either "predictor" or "adversary"
         """
-        # Preinitialized optimizer
         if issubclass(type(optim_param), self.optim_class):
             return optim_param
-        # Optimizer constructor
         elif callable(optim_param):
             return optim_param(model)
-        # Optimizer keyword
         elif isinstance(optim_param, str):
             got_optim = self.get_optimizer(optim_param, model)
             if got_optim is None:
@@ -169,7 +157,6 @@ class BackendEngine:
                 )
             else:
                 return got_optim
-        # Invalid optim_param
         raise ValueError(
             _KWARG_ERROR_MESSAGE.format(
                 f"{name}_optimizer",

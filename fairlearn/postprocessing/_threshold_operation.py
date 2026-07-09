@@ -1,23 +1,6 @@
-# Copyright (c) Microsoft Corporation and Fairlearn contributors.
-# Licensed under the MIT License.
 
 
 class ThresholdOperation:
-    """Represents the threshold operations that are used in postprocessing approaches.
-
-    Threshold operations simply indicate a threshold and an operator, thereby defining a function.
-    The function can be evaluated at arbitrary points (usually the scores returned from
-    unconstrained predictors) to return a bool value.
-
-    Read more in the :ref:`User Guide <postprocessing>`.
-
-    Parameters
-    ----------
-    operator : str
-        The threshold operator, can be either '>' or '<'.
-    threshold : float
-        The threshold, can be numpy.inf or -numpy.inf.
-    """
 
     def __init__(self, operator, threshold):
         if operator not in [">", "<"]:
@@ -27,13 +10,11 @@ class ThresholdOperation:
 
     @property
     def threshold(self):
-        """Return the stored threshold."""
-        return self._threshold
+        pass
 
     @property
     def operator(self):
-        """Return the stored threshold operator."""
-        return self._operator
+        pass
 
     def __call__(self, y_hat):
         """Evaluate the threshold rule `y_hat > t` or `y_hat < t`.

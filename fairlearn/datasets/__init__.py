@@ -1,8 +1,5 @@
-# Copyright (c) Microsoft Corporation and Fairlearn contributors.
-# Licensed under the MIT License.
 
 
-"""Datasets that can be used for benchmarking and education."""
 
 from ._fetch_acs_income import fetch_acs_income
 from ._fetch_adult import fetch_adult

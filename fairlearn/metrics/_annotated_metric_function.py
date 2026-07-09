@@ -1,5 +1,3 @@
-# Copyright (c) Fairlearn contributors.
-# Licensed under the MIT License.
 from __future__ import annotations
 
 import logging
@@ -22,31 +20,6 @@ _METRIC_FUNCTION_NOT_CALLABLE = "Object passed as metric function not callable"
 
 
 class AnnotatedMetricFunction(Generic[R]):
-    """Wraps functions to make them callable with a DataFrame argument.
-
-    The :class:`MetricFrame` makes extensive use of `pandas` DataFrames
-    internally. In particular, combinations of sensitive (and control)
-    features are selected using `DataFrame.groupby()` and acted on via
-    `DataFrame.apply()`. The net result of this is that it is useful
-    to have a function wrapper which can be invoked with a DataFrame
-    argument, and extract its arguments from that DataFrame.
-
-    Parameters
-    ----------
-    func : callable
-        The metric function we wish to invoke
-    name: str | None
-        An optional string defining the name of the function
-    positional_argument_names: list[str] | None
-        The column names to be extracted and passed as positional arguments
-        when invoking the function
-    kw_argument_mapping: dict[str, str] | None
-        The column names which are to be passed as keyword arguments
-        when invoking the function. Since the DataFrame column names may
-        not match the function's argument names, this is a dictionary
-        where the keys are the function argument names, and the values
-        are the column names
-    """
 
     def __init__(
         self,

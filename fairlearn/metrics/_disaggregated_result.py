@@ -1,5 +1,3 @@
-# Copyright (c) Microsoft Corporation and Fairlearn contributors.
-# Licensed under the MIT License.
 from __future__ import annotations
 
 import logging
@@ -48,7 +46,6 @@ def apply_to_dataframe(
     values = dict()
     for function_name, metric_function in metric_functions.items():
         values[function_name] = metric_function(data)
-    # correctly handle zero provided metrics
     if len(values) == 0:
         result = pd.Series(dtype=float)
     else:
@@ -57,26 +54,6 @@ def apply_to_dataframe(
 
 
 class DisaggregatedResult:
-    """Pickier version of MetricFrame.
-
-    This holds the internal result from a disaggregated metric
-    computation, and provides `apply_grouping()` (to cover min
-    and max), `difference()` and `ratio()` methods.
-
-    The main difference to the results computed by MetricFrame
-    is that no account is made of whether the user supplied
-    a bare function or a dictionary. Hence the results are
-    always Series or DataFrame.
-
-    Parameters
-    ----------
-    overall: Series or DataFrame
-        The metric function(s) computed on the entire dataset, split by
-        control features if supplied
-    by_group: Series or DataFrame
-        The metric function(s) computed on each subgroup identified by
-        the sensitive and control features
-    """
 
     def __init__(self, overall: pd.Series | pd.DataFrame, by_group: pd.DataFrame):
         """Construct an object."""
@@ -86,13 +63,11 @@ class DisaggregatedResult:
 
     @property
     def overall(self) -> pd.Series | pd.DataFrame:
-        """Return overall metrics."""
-        return self._overall
+        pass
 
     @property
     def by_group(self) -> pd.DataFrame:
-        """Return the metrics by group."""
-        return self._by_group
+        pass
 
     def apply_grouping(
         self,
@@ -131,7 +106,6 @@ class DisaggregatedResult:
                     raise ValueError(_MF_CONTAINS_NON_SCALAR_ERROR_MESSAGE) from ve
 
             elif errors == "coerce":
-                # Fill in the possible min/max values, else np.nan
                 mf = self.by_group.apply(
                     lambda x: x.apply(lambda y: y if np.isscalar(y) else np.nan)
                 )
@@ -146,7 +120,6 @@ class DisaggregatedResult:
                 except ValueError as ve:
                     raise ValueError(_MF_CONTAINS_NON_SCALAR_ERROR_MESSAGE) from ve
             elif errors == "coerce":
-                # Fill all impossible columns with NaN before grouping metric frame
                 mf = self.by_group.apply(
                     lambda x: x.apply(lambda y: y if np.isscalar(y) else np.nan)
                 )
@@ -202,8 +175,6 @@ class DisaggregatedResult:
         else:
             raise ValueError("Unrecognised method '{0}' in difference() call".format(method))
 
-        # Can assume errors='coerce', else error would already have been raised in .group_min
-        # Fill all non-scalar values with NaN
         mf = self.by_group.apply(lambda x: x.apply(lambda y: y if np.isscalar(y) else np.nan))
 
         if control_feature_names is None:
@@ -254,11 +225,6 @@ class DisaggregatedResult:
         typing.Any or pandas.Series or pandas.DataFrame
         """
 
-        def ratio_sub_one(x):
-            if x > 1:
-                return 1 / x
-            else:
-                return x
 
         if errors not in _VALID_ERROR_STRING:
             raise ValueError(_INVALID_ERRORS_VALUE_ERROR_MESSAGE)
@@ -271,7 +237,6 @@ class DisaggregatedResult:
             ratios = None
 
             if control_feature_names is not None:
-                # It's easiest to give in to the DataFrame columns preference
                 ratios = self.by_group.unstack(level=control_feature_names) / self.overall.unstack(
                     level=control_feature_names
                 )

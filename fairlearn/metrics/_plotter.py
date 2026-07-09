@@ -1,7 +1,4 @@
-# Copyright (c) Fairlearn contributors.
-# Licensed under the MIT License.
 
-"""Utility class for plotting metrics with and without confidence interval ranges."""
 
 from __future__ import annotations
 
@@ -49,7 +46,6 @@ def _build_legend(ax, kind, legend_label):
     """
     color = ax.lines[0].get_color() if kind == "point" else "black"
 
-    # extend legend with user-provided legend_label
     handles, labels = ax.get_legend_handles_labels()
     custom_line = [Line2D([0], [0], color=color, label=legend_label)]
     handles.extend(custom_line)
@@ -189,10 +185,8 @@ def plot_metric_frame(
     -------
     :class:`matplotlib.axes.Axes` or :class:`numpy.ndarray` of them
     """
-    # ensure metric_frame is a MetricFrame
     if not isinstance(metric_frame, MetricFrame):
         raise (ValueError(_METRIC_FRAME_INVALID_ERROR))
-    # ensure metrics is either list, str, or None
     if not (isinstance(metrics, list) or isinstance(metrics, str) or metrics is None):
         raise ValueError(_METRICS_NOT_LIST_OR_STR_ERROR.format(type(metrics)))
 
@@ -201,7 +195,6 @@ def plot_metric_frame(
 
     df = metric_frame.by_group
 
-    # only plot metrics that aren't arrays (filters out metric errors)
     if metrics is None:
         metrics = []
         for metric in list(df):
@@ -212,13 +205,10 @@ def plot_metric_frame(
     if len(metrics) == 0:
         raise ValueError(_METRIC_LENGTH_ZERO_ERROR)
 
-    # plotting without confidence intervals
-    # Note: Returns early
     if conf_intervals is None:
         axs = _plot_df(df, metrics, kind, subplots, ci_labels_legend, **kwargs)
         return axs
 
-    # check for valid confidence intervals
     for conf_interval in conf_intervals:
         for tup in df[conf_interval]:
             if not _is_arraylike(tup) or len(tup) != 2:
@@ -228,7 +218,6 @@ def plot_metric_frame(
 
     df_all_errors = pd.DataFrame([])
     df_all_bounds = pd.DataFrame([])
-    # plotting with confidence intervals:
     for metric, conf_interval in zip(metrics, conf_intervals):
         df_temp = pd.DataFrame([])
         df_temp[["lower", "upper"]] = pd.DataFrame(df[conf_interval].tolist(), index=df.index)
@@ -240,7 +229,6 @@ def plot_metric_frame(
 
     axs = _plot_df(df, metrics, kind, subplots, ci_labels_legend, df_all_errors, **kwargs)
 
-    # Confidence interval labels don't get plotted when subplots=False
     if plot_ci_labels and kind == "bar" and subplots:
         for j, metric in enumerate(metrics):
             temp_axs = axs.flatten() if isinstance(axs, np.ndarray) else np.array([axs])

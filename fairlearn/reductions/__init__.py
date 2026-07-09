@@ -1,12 +1,4 @@
-# Copyright (c) Microsoft Corporation and Fairlearn contributors.
-# Licensed under the MIT License.
 
-"""Algorithms implementing the reductions approach to disparity mitigation.
-
-In this approach, disparity constraints are cast as Lagrange multipliers, which cause the
-reweighting and relabelling of the input data. This *reduces* the problem back to standard machine
-learning training.
-"""
 
 from ._exponentiated_gradient import ExponentiatedGradient
 from ._grid_search import GridSearch

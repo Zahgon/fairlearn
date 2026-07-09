@@ -1,7 +1,4 @@
-# Copyright (c) Microsoft Corporation and Fairlearn contributors.
-# Licensed under the MIT License.
 
-"""Utilities for plotting curves."""
 
 import pandas as pd
 from sklearn.utils.validation import check_is_fitted

@@ -1,10 +1,4 @@
-# Copyright (c) Microsoft Corporation and Fairlearn contributors.
-# Licensed under the MIT License.
 
-"""A variety of base metrics useful for assessing fairness.
-
-These are metrics which are not part of `scikit-learn`.
-"""
 
 from typing import Any
 
@@ -53,7 +47,6 @@ def _get_labels_for_confusion_matrix(labels, pos_label):
     """
     unique_labels = list(np.unique(labels))
 
-    # Set pos_label if needed
     if pos_label is None:
         labels01 = frozenset([0, 1])
         labels11 = frozenset([-1, 1])
@@ -62,7 +55,6 @@ def _get_labels_for_confusion_matrix(labels, pos_label):
         else:
             raise ValueError(_RESTRICTED_VALS_IF_POS_LABEL_NONE)
 
-    # Ensure unique_labels has two elements
     if len(unique_labels) == 1:
         if unique_labels[0] == pos_label:
             unique_labels = [np.iinfo(np.int64).min, pos_label]

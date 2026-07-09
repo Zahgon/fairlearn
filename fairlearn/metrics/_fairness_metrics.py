@@ -1,7 +1,4 @@
-# Copyright (c) Microsoft Corporation and Fairlearn contributors.
-# Licensed under the MIT License.
 
-"""Metrics for measuring fairness."""
 
 from typing import Literal
 

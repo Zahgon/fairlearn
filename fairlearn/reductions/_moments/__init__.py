@@ -1,7 +1,4 @@
-# Copyright (c) Microsoft Corporation and Fairlearn contributors.
-# Licensed under the MIT License.
 
-"""Holds the various Moments."""
 
 from .bounded_group_loss import BoundedGroupLoss
 from .bounded_group_loss import (
